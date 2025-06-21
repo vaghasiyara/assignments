@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assignment OCR Uploader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg">
+    <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">Upload Assignment Image</h2>
+    
+    <form id="upload-form" class="space-y-4">
+      <input type="file" id="file-input" name="file" accept="image/*" required class="block w-full p-2 border rounded" />
+      <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Upload</button>
+    </form>
+
+    <div class="mt-6">
+      <h3 class="text-lg font-semibold text-gray-700">Extracted Text:</h3>
+      <pre id="extracted-text" class="p-3 bg-gray-200 rounded mt-2 whitespace-pre-wrap text-sm"></pre>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-lg font-semibold text-gray-700">Score:</h3>
+      <div id="score" class="text-xl text-green-600 font-bold mt-1"></div>
+    </div>
+
+    <div class="mt-6 text-center">
+      <button id="download-result" style="display:none;" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Download Result</button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('upload-form');
+    const extractedTextEl = document.getElementById('extracted-text');
+    const scoreEl = document.getElementById('score');
+    const downloadBtn = document.getElementById('download-result');
+    let latestResult = '';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('file-input');
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      const response = await fetch('/upload-assignment', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        extractedTextEl.textContent = result.text;
+        scoreEl.textContent = result.score;
+        latestResult = `Extracted Text:\n${result.text}\n\nScore: ${result.score}`;
+        downloadBtn.style.display = 'inline-block';
+      } else {
+        alert('Upload failed');
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([latestResult], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'assignment_result.txt';
+      link.click();
+    });
+  </script>
+</body>
+</html>

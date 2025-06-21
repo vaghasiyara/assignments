@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>Upload Assignment</h2>
+  <form action="http://127.0.0.1:8001/upload-assignment" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" required /><br><br>
+    <label>Submission Time (ISO):</label>
+    <input type="text" name="submission_time" value="2025-06-20T22:00:00" required /><br><br>
+    <input type="submit" />
+  </form>
+</body>
+</html>
+
+<h2>Faculty: Upload Answer Sheet</h2>
+<form action="http://127.0.0.1:8001/upload-answer-sheet" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" required /><br><br>
+  <input type="submit" value="Upload Answer Sheet" />
+</form>
